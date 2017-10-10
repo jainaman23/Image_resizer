@@ -19,6 +19,11 @@
     $h = $height;
 
     $basic = $(this).croppie({
+      // update: function() {
+      //   if(counter==0)
+      //    $(this).croppie('setZoom', '0');
+      //   counter++;
+      // }
       viewport: {
         width: $width,
         height: $height
@@ -41,21 +46,23 @@
       e.preventDefault();
       $attributes = {};
       // Inserting Fid
+      console.log(Number($basic.croppie('get').points[0]) + 2);
+      console.log($basic.croppie('get'));
       $attributes['fid'] = settings.image_resizer.fid;
-      $attributes['x'] = $basic.croppie('get').points[0];
-      $attributes['y'] = $basic.croppie('get').points[1];
+      $attributes['x'] = Number($basic.croppie('get').points[0]) + Number(2);
+      $attributes['y'] = Number($basic.croppie('get').points[1]) + Number(2);
       $attributes['o_width'] = $w;
       $attributes['o_height'] = $h;
+      $attributes['width'] = Number($w / $basic.croppie('get').zoom);
+      $attributes['height'] = Number($h / $basic.croppie('get').zoom);
 
-      if ($basic.croppie('get').zoom > 1) {
-        $attributes['width'] = $w * $basic.croppie('get').zoom;
-        $attributes['height'] = $h * $basic.croppie('get').zoom;
-      }
+      // if ($basic.croppie('get').zoom > 1) {
+      // }
 
-      if ($basic.croppie('get').zoom <= 1) {
-        $attributes['width'] = $w / $basic.croppie('get').zoom;
-        $attributes['height'] = $h / $basic.croppie('get').zoom;
-      }
+      // if ($basic.croppie('get').zoom <= 1) {
+      //   $attributes['width'] = $w / $basic.croppie('get').zoom;
+      //   $attributes['height'] = $h / $basic.croppie('get').zoom;
+      // }
 
       // Activate Download
       $(this).parent('.generator').siblings("#ajax-target").show().load("/image-resizer/download?&fid=" + $attributes['fid'] + "&x=" + $attributes['x'] + "&y=" + $attributes['y'] + "&width=" + $attributes['width'] + "&height=" + $attributes['height'] + "&o_width=" + $attributes['o_width'] + "&o_height=" + $attributes['o_height'] );
