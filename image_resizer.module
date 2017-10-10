@@ -1,0 +1,167 @@
+<?php
+
+/**
+ * Implements Hook_Menu().
+ */
+function image_resizer_menu() {
+  $items['image-resizer'] = array(
+    'title' => 'Image Setting',
+    'description' => 'Upload image for different style',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('img_up'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM
+  );
+
+  $items['image-resizer/download'] = array(
+    'title' => 'Image Resizer Download',
+    'page callback' => 'image_resizer_crop',
+    'access callback' => TRUE,
+    'delivery callback' => 'image_resizer_ajax_callback',
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Image Upload Form
+ * @param  array $form
+ * @param  array &$form_state
+ * @return form
+ */
+function img_up($form, &$form_state) {
+  $form = array();
+  $form['im_upload'] = array(
+    '#type' => 'file',
+    '#description' => 'Upload your image that need to be resize',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  if (!empty($form_state['template'])) {
+    $form['#attached']['js'][] = array(
+      'data' => array(
+        'image_resizer' => array(
+          'fid' => $form_state['fid'],
+          'img' => $form_state['template']['img'],
+        ),
+      ),
+      'type' => 'setting'
+    );
+
+    $form['files_info'] = array(
+      '#type' => 'markup',
+      '#markup' => $form_state['template']['data'],
+    );
+
+  }
+
+  return $form;
+}
+
+/**
+ * Image Upload Validation
+ */
+function img_up_validate($form, &$form_state) {
+  $file = file_save_upload('im_upload', array(
+    'file_validate_is_image' => array(),
+    'file_validate_extensions' => array('png gif jpg jpeg'),
+  ));
+  if ($file) {
+    if ($file = file_move($file, 'public://')) {
+      $form_state['values']['file'] = $file;
+    }
+    else {
+      form_set_error('file', t('Failed to write the uploaded file the site\'s file folder.'));
+    }
+  }
+  else {
+    form_set_error('file', t('No file was uploaded.'));
+  }
+}
+
+/**
+ * Submit
+ */
+function img_up_submit($form, &$form_state) {
+  $file = $form_state['values']['file'];
+  unset($form_state['values']['file']);
+  $file->status = FILE_STATUS_PERMANENT;
+  file_save($file);
+
+  $form_state['template']['data'] = "<div class='image_generations'></div>";
+  $form_state['template']['img'] = file_create_url($file->uri);
+
+  $form_state['fid'] = $file->fid;
+  drupal_set_message(t('Select Your Desired Dimensions Then Click On Generate'));
+
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Implements Page Preprocess.
+ */
+function image_resizer_preprocess_page(&$variables) {
+  $module = drupal_get_path("module", "image_resizer");
+  drupal_add_css($module . "/css/croppie.css");
+  drupal_add_css($module . "/css/image_resizer.css");
+  drupal_add_js($module . "/js/croppie.min.js");
+  drupal_add_js($module . "/js/image_resizer.js");
+}
+
+
+/**
+ * Cropping Operations
+ *
+ * @return Croped Image Path
+ */
+function image_resizer_crop() {
+  $query = drupal_get_query_parameters();
+
+  watchdog('image_resizer', print_r($query, TRUE));
+
+  // Loading File Object
+  $file  = file_load($query['fid']);
+  // Extracting File Path
+  $image = drupal_realpath($file->uri);
+  $img_dir = 'public://image_resizer';
+  // Check for directory existence.
+  $dir = file_prepare_directory($img_dir, FILE_CREATE_DIRECTORY);
+  if (!$dir) {
+    // Creating directory
+    drupal_mkdir($img_dir);
+  }
+  // Setting Destination
+  $destination = $img_dir . "/" . $file->filename;
+  // Loading Original Image
+  $img = image_load($image);
+  // Croping Image
+  image_gd_crop($img, $query['x'], $query['y'], $query['width'], $query['height']);
+
+  // Resizing Image to Required Dimensions
+  image_gd_resize($img, $query['o_width'], $query['o_height']);
+
+  // Saving Image
+  image_gd_save($img, $destination);
+
+  // Return Cropped Image Path
+  return file_create_url($destination);
+}
+
+/**
+ * Generate Output.
+ *
+ * @param  string $page_callback_result Cropped image path.
+ *
+ * @return HTML
+ */
+function image_resizer_ajax_callback($page_callback_result) {
+   // Only render content and validates return
+  $html = "<a href='" . $page_callback_result . "' download=download>Download</a>";
+  print $html;
+  drupal_page_footer();
+}

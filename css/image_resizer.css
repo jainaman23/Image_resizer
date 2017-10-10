@@ -1,0 +1,25 @@
+.croppie-container {
+  margin-bottom: 100px;
+}
+
+.action-wrapper {
+  text-align: right;
+}
+
+.action-wrapper .button {
+  background-color: #f6f6f2;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  vertical-align: middle;
+  padding: 10px 20px;
+  color: #000;
+}
+
+.action-wrapper .button a {
+  color: #000;
+}
+

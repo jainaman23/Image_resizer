@@ -1,0 +1,4 @@
+name =  Image Resizer
+description = Generate Different Sizes Images
+package = Image Resizer
+core = 7.x
