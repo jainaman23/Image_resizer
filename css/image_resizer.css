@@ -2,8 +2,26 @@
   margin-bottom: 100px;
 }
 
+.image-resizer-wrapper {
+  width: 600px;
+  height: 400px;
+}
+
 .action-wrapper {
   text-align: right;
+  position: relative;;
+}
+
+.action-wrapper .details {
+  position: absolute;;
+  left: 0;
+  bottom: 0;
+}
+
+.action-wrapper .details p {
+  margin: 0;
+  display: inline-block;;
+  vertical-align: middle;
 }
 
 .action-wrapper .button {
@@ -17,6 +35,7 @@
   vertical-align: middle;
   padding: 10px 20px;
   color: #000;
+  margin-left: 10px;
 }
 
 .action-wrapper .button a {
