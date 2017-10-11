@@ -126,7 +126,7 @@ function img_up_submit($form, &$form_state) {
   $form_state['template']['img'] = file_create_url($file->uri);
 
   $form_state['fid'] = $file->fid;
-  drupal_set_message(t('Select Your Desired Dimensions Then Click On Generate'));
+  drupal_set_message(t('Click On Generate to activate Download link'));
 
   $form_state['rebuild'] = TRUE;
 }
