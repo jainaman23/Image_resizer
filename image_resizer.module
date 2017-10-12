@@ -179,7 +179,7 @@ function image_resizer_crop() {
  */
 function image_resizer_ajax_callback($page_callback_result) {
    // Only render content and validates return
-  $html = "<a href='" . $page_callback_result . "' download=download>Download</a>";
+  $html = "<a href='" . $page_callback_result . "'>Download</a>";
   print $html;
   drupal_page_footer();
 }
