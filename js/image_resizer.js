@@ -47,6 +47,9 @@
     }
 
     $(this).find(".image-generator").on("click", function(e){
+      console.log($(this));
+      console.log($(this).parent('.generator').siblings(".download"));
+      $(this).parent('.generator').siblings(".download").hide();
       e.preventDefault();
       $attributes = {};
       // Inserting Fid
@@ -59,10 +62,8 @@
       $attributes['height'] = Number(height / $basic.croppie('get').zoom);
 
       // Activate Download
-      $(this).parent('.generator').siblings("#ajax-target").show().load("/image-resizer/download?&fid=" + $attributes['fid'] + "&x=" + $attributes['x'] + "&y=" + $attributes['y'] + "&width=" + $attributes['width'] + "&height=" + $attributes['height'] + "&o_width=" + $attributes['o_width'] + "&o_height=" + $attributes['o_height']);
-
-      $(this).parent('.generator').siblings(".download").find("a").on("click", function(){
-        $(this).closest(".download").hide();
+      $(this).parent('.generator').siblings("#ajax-target").load("/image-resizer/download?&fid=" + $attributes['fid'] + "&x=" + $attributes['x'] + "&y=" + $attributes['y'] + "&width=" + $attributes['width'] + "&height=" + $attributes['height'] + "&o_width=" + $attributes['o_width'] + "&o_height=" + $attributes['o_height'], function(){
+        $(this).show();
       });
     });
   }
