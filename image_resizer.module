@@ -37,6 +37,18 @@ function img_up($form, &$form_state) {
     '#description' => 'Upload your image that need to be resize',
   );
 
+  $form['sizes'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      0 => t('Blogs'),
+      1 => t('Resources'),
+      3 => t('Business Page, Campaign'),
+      4 => t('Event'),
+      5 => t('Webinar'),
+    ),
+    '#default_value' => 0,
+  );
+
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Upload',
@@ -71,17 +83,6 @@ function img_up($form, &$form_state) {
       'type' => 'setting'
     );
 
-    $form['sizes'] = array(
-      '#type' => 'select',
-      '#options' => array(
-        0 => t('Blogs'),
-        1 => t('Resources'),
-        3 => t('Business Page, Campaign'),
-        4 => t('Event'),
-        5 => t('Webinar'),
-      ),
-      '#default_value' => 0,
-    );
 
     $form['files_info'] = array(
       '#type' => 'markup',
