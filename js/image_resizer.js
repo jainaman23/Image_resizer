@@ -22,6 +22,7 @@
   $.fn.image_wrapper = function($width = 0, $height = 0, settings, name='') {
     $(this).prepend('<div class="action-wrapper"><div class="details"><p>'+name+'</p>&nbsp;<p>'+$width+' x '+$height+'</div><div class="generator button"><a class="image-generator" href="/image-resizer">Generate</a></div><div class="download button" id="ajax-target">Download</div></div>');
     $(".download").hide();
+
     var cutter = 3;
     var width = 0;
     var height = 0;
@@ -44,11 +45,12 @@
         url: settings.image_resizer.img,
         points: [0,0,0,0],
       });
+
+      $basic.croppie('setZoom', "2");
     }
 
     $(this).find(".image-generator").on("click", function(e){
-      console.log($(this));
-      console.log($(this).parent('.generator').siblings(".download"));
+      $(this).closest(".image-resizer-wrapper").append('<div class="load"></div>');
       $(this).parent('.generator').siblings(".download").hide();
       e.preventDefault();
       $attributes = {};
@@ -64,6 +66,7 @@
       // Activate Download
       $(this).parent('.generator').siblings("#ajax-target").load("/image-resizer/download?&fid=" + $attributes['fid'] + "&x=" + $attributes['x'] + "&y=" + $attributes['y'] + "&width=" + $attributes['width'] + "&height=" + $attributes['height'] + "&o_width=" + $attributes['o_width'] + "&o_height=" + $attributes['o_height'], function(){
         $(this).show();
+        $(this).closest(".image-resizer-wrapper").find(".load").remove();
       });
     });
   }
