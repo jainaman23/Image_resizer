@@ -55,7 +55,10 @@ function img_up($form, &$form_state) {
   );
 
   $form['#attached']['js'] = array(
-    drupal_get_path("module", "image_resizer") . "/js/croppie.min.js" => array(
+    // drupal_get_path("module", "image_resizer") . "/js/croppie.min.js" => array(
+    //   'type' => 'file',
+    // ),
+    drupal_get_path("module", "image_resizer") . "/js/component.js" => array(
       'type' => 'file',
     ),
     drupal_get_path("module", "image_resizer") . "/js/image_resizer.js" => array(
@@ -64,7 +67,16 @@ function img_up($form, &$form_state) {
   );
 
   $form['#attached']['css'] = array(
-    drupal_get_path("module", "image_resizer") . "/css/croppie.css" => array(
+    // drupal_get_path("module", "image_resizer") . "/css/croppie.css" => array(
+    //   'type' => 'file',
+    // ),
+    drupal_get_path("module", "image_resizer") . "/css/component.css" => array(
+      'type' => 'file',
+    ),
+    drupal_get_path("module", "image_resizer") . "/css/normalize.css" => array(
+      'type' => 'file',
+    ),
+    drupal_get_path("module", "image_resizer") . "/css/demo.css" => array(
       'type' => 'file',
     ),
     drupal_get_path("module", "image_resizer") . "/css/image_resizer.css" => array(
@@ -86,7 +98,8 @@ function img_up($form, &$form_state) {
 
     $form['files_info'] = array(
       '#type' => 'markup',
-      '#markup' => "<div class='image-resizer-wrap'>",
+      '#markup' => '<div class="component"><div class="overlay"><div class="overlay-inner"></div>
+          </div><img class="resize-image" src="'.$form_state['template']['img'].'" alt="Image" /></div><button class="btn-crop js-crop">Crop<img class="icon-crop" src="img/crop.svg"></button>',
     );
   }
 
