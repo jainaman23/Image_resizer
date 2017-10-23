@@ -68,12 +68,12 @@
 
 .resize-container img {
     display: block
+    max-width: initial;
 }
 
 .resize-container:hover img,
 .resize-container:active img {
     outline: 2px dashed rgba(222,60,80,.9);
-    max-width: initial;
 }
 
 .resize-handle-ne,
