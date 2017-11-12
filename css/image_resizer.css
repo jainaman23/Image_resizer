@@ -6,6 +6,11 @@
   width: 600px;
   height: 500px;
   position: relative;
+  margin-bottom: 30px;
+}
+
+.image-resizer-wrapper .component {
+  padding: 15px;
 }
 
 .action-wrapper {

@@ -4,26 +4,24 @@
       if(window.location.protocol == 'file:'){
         alert('To test this demo properly please use a local server such as XAMPP or WAMP. See README.md for more details.');
       }
-      // Set zoom level.
-      var zoom = 0;
 
-      var resizeableImage = function(image_target) {
+      $.fn.resizeableImage = function() {
         // Some variable and settings
-        var $container,
-            orig_src = new Image(),
-            image_target = $(image_target).get(0),
-            event_state = {},
-            constrain = false,
-            min_width = 160, // Change as required
-            min_height = 160,
-            max_width = 2000, // Change as required
-            max_height = 2000,
-            resize_canvas = document.createElement('canvas');
+        var element = this;
+        var $container = 0,
+          orig_src = new Image(),
+          image_target = $($(this).selector).get(0),
+          event_state = {},
+          constrain = false,
+          min_width = 160, // Change as required
+          min_height = 160,
+          max_width = 2000, // Change as required
+          max_height = 2000,
+          resize_canvas = document.createElement('canvas');
 
-        init = function(){
-
+        element.init = function() {
           // When resizing, we will always use this copy of the original as the base
-          orig_src.src=image_target.src;
+          orig_src.src = image_target.src;
 
           // Wrap the image with the container and add resize handles
           $(image_target).wrap('<div class="resize-container"></div>')
@@ -33,29 +31,29 @@
           .after('<span class="resize-handle resize-handle-sw"></span>');
 
           // Assign the container to a variable
-          $container =  $(image_target).parent('.resize-container');
-
+          $container =  $($(element).selector).parent('.resize-container');
           // Add events
-          $container.on('mousedown touchstart', '.resize-handle', startResize);
-          $container.on('mousedown touchstart', 'img', startMoving);
-          $('.js-crop').on('click', crop);
+          $container.on('mousedown touchstart', '.resize-handle', element.startResize);
+          $container.on('mousedown touchstart', 'img', element.startMoving);
+          console.log($(this));
+          $(this).closest('.image-resizer-wrapper').find('.js-crop').on('click', element.crop);
         };
 
-        startResize = function(e){
+        element.startResize = function(e){
           e.preventDefault();
           e.stopPropagation();
-          saveEventState(e);
-          $(document).on('mousemove touchmove', resizing);
-          $(document).on('mouseup touchend', endResize);
+          element.saveEventState(e);
+          $(document).on('mousemove touchmove', element.resizing);
+          $(document).on('mouseup touchend', element.endResize);
         };
 
-        endResize = function(e){
+        element.endResize = function(e){
           e.preventDefault();
-          $(document).off('mouseup touchend', endResize);
-          $(document).off('mousemove touchmove', resizing);
+          $(document).off('mouseup touchend', element.endResize);
+          $(document).off('mousemove touchmove', element.resizing);
         };
 
-        saveEventState = function(e){
+        element.saveEventState = function(e){
           // Save the initial event details and container state
           event_state.container_width = $container.width();
           event_state.container_height = $container.height();
@@ -77,7 +75,8 @@
           event_state.evnt = e;
         };
 
-        resizing = function(e){
+        element.resizing = function(e){
+          console.log(e);
           var mouse={},width,height,left,top,offset=$container.offset();
           mouse.x = (e.clientX || e.pageX || e.originalEvent.touches[0].clientX) + $(window).scrollLeft();
           mouse.y = (e.clientY || e.pageY || e.originalEvent.touches[0].clientY) + $(window).scrollTop();
@@ -118,38 +117,35 @@
 
           if(width > min_width && height > min_height && width < max_width && height < max_height){
             // To improve performance you might limit how often resizeImage() is called
-            resizeImage(width, height);
+            element.resizeImage(width, height);
             // Without this Firefox will not re-calculate the the image dimensions until drag end
             $container.offset({'left': left, 'top': top});
           }
         }
 
-        resizeImage = function(width, height){
+        element.resizeImage = function(width, height){
           resize_canvas.width = width;
           resize_canvas.height = height;
           resize_canvas.getContext('2d').drawImage(orig_src, 0, 0, width, height);
 
-          $ori_area = orig_src.width * orig_src.height;
-          $new_area = resize_canvas.width * resize_canvas.height;
-          zoom = ($ori_area - $new_area) / $ori_area;
           $(image_target).attr('src', resize_canvas.toDataURL("image/png"));
         };
 
-        startMoving = function(e){
+        element.startMoving = function(e){
           e.preventDefault();
           e.stopPropagation();
-          saveEventState(e);
-          $(document).on('mousemove touchmove', moving);
-          $(document).on('mouseup touchend', endMoving);
+          element.saveEventState(e);
+          $(document).on('mousemove touchmove', element.moving);
+          $(document).on('mouseup touchend', element.endMoving);
         };
 
-        endMoving = function(e){
+        element.endMoving = function(e){
           e.preventDefault();
-          $(document).off('mouseup touchend', endMoving);
-          $(document).off('mousemove touchmove', moving);
+          $(document).off('mouseup touchend', element.endMoving);
+          $(document).off('mousemove touchmove', element.moving);
         };
 
-        moving = function(e){
+        element.moving = function(e){
           var  mouse={}, touches;
           e.preventDefault();
           e.stopPropagation();
@@ -162,6 +158,7 @@
             'left': mouse.x - ( event_state.mouse_x - event_state.container_left ),
             'top': mouse.y - ( event_state.mouse_y - event_state.container_top )
           });
+
           // Watch for pinch zoom gesture while moving
           if(event_state.touches && event_state.touches.length > 1 && touches.length > 1){
             var width = event_state.container_width, height = event_state.container_height;
@@ -182,17 +179,18 @@
             width = width * ratio;
             height = height * ratio;
             // To improve performance you might limit how often resizeImage() is called
-            resizeImage(width, height);
+            element.resizeImage(width, height);
           }
         };
 
-        crop = function(){
+        element.crop = function(e){
+          e.preventDefault();
           //Find the part of the image that is inside the crop box
           var crop_canvas,
-              left = $('.overlay').offset().left - $container.offset().left,
-              top =  $('.overlay').offset().top - $container.offset().top,
-              width = $('.overlay').width(),
-              height = $('.overlay').height();
+            left = $(this).siblings(".component").find('.overlay').offset().left - $container.offset().left,
+            top =  $(this).siblings(".component").find('.overlay').offset().top - $container.offset().top,
+            width = $(this).siblings(".component").find('.overlay').width(),
+            height = $(this).siblings(".component").find('.overlay').height();
 
           crop_canvas = document.createElement('canvas');
           crop_canvas.width = width;
@@ -201,11 +199,14 @@
           window.open(crop_canvas.toDataURL("image/png"));
         }
 
-        init();
+        element.init();
       };
 
       // Kick everything off with the target image
-      resizeableImage($('.resize-image'));
+      $('.resizer-first-container .resize-image').resizeableImage();
+      $('.resizer-second-container .resize-image').resizeableImage();
+      $('.resizer-third-container .resize-image').resizeableImage();
+      $('.resizer-fourth-container .resize-image').resizeableImage();
     }
   }
 })(jQuery);
