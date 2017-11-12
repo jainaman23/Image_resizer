@@ -4,12 +4,13 @@
 (function($) {
   Drupal.behaviors.image_resizer = {
     attach: function (context, settings) {
-//       $(".image-resizer-wrap").once("ele", function(){
-//         $("<div class='resizer-first-container image-resizer-wrapper'></div>").appendTo($(this));
-//         $("<div class='resizer-second-container image-resizer-wrapper'></div>").appendTo($(this));
-//         $("<div class='resizer-third-container image-resizer-wrapper'></div>").appendTo($(this));
-//         $("<div class='resizer-fourth-container image-resizer-wrapper'></div>").appendTo($(this));
-//       });
+      $img = Drupal.settings.image_resizer.img;
+      $(".image-resizer-wrap").once("ele", function(){
+        $('<div class="resizer-first-container image-resizer-wrapper"><div class="component"><div class="overlay"><div class="overlay-inner"></div></div><img class="resize-image one" src="'+ $img +'" alt="Image" /></div><button class="btn-crop js-crop">Crop<img class="icon-crop" src="img/crop.svg"></button></div>').appendTo($(this));
+        $('<div class="resizer-second-container image-resizer-wrapper"><div class="component"><div class="overlay"><div class="overlay-inner"></div></div><img class="resize-image two" src="'+ $img +'" alt="Image" /></div><button class="btn-crop js-crop">Crop<img class="icon-crop" src="img/crop.svg"></button></div>').appendTo($(this));
+        $('<div class="resizer-third-container image-resizer-wrapper"><div class="component"><div class="overlay"><div class="overlay-inner"></div></div><img class="resize-image three" src="'+ $img +'" alt="Image" /></div><button class="btn-crop js-crop">Crop<img class="icon-crop" src="img/crop.svg"></button></div>').appendTo($(this));
+        $('<div class="resizer-fourth-container image-resizer-wrapper"><div class="component"><div class="overlay"><div class="overlay-inner"></div></div><img class="resize-image four" src="'+ $img +'" alt="Image" /></div><button class="btn-crop js-crop">Crop<img class="icon-crop" src="img/crop.svg"></button></div>').appendTo($(this));
+      });
 
 //       // First
 //       $(".resizer-first-container").image_wrapper(1503, 408, settings, 'Profile Banner');
