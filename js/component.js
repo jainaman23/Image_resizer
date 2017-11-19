@@ -7,18 +7,20 @@
 
       $.fn.resizeableImage = function() {
         // Some variable and settings
-        var element = this;
-        var $container = 0,
-          orig_src = new Image(),
-          image_target = $($(this).selector).get(0),
-          event_state = {},
-          constrain = false,
-          min_width = 160, // Change as required
-          min_height = 160,
-          max_width = 2000, // Change as required
-          max_height = 2000,
+        var $container  = 0,
+          element       = this,
+          orig_src      = new Image(),
+          image_target  = $($(this).selector).get(0),
+          original_target  = $($($(this).selector).get(0)).attr("src"),
+          event_state   = {},
+          constrain     = false,
+          min_width     = 160, // Change as required
+          min_height    = 160,
+          max_width     = 2000, // Change as required
+          max_height    = 2000,
+          resize_image  = 0;
           resize_canvas = document.createElement('canvas');
-
+          console.log(original_target);
         element.init = function() {
           // When resizing, we will always use this copy of the original as the base
           orig_src.src = image_target.src;
@@ -76,8 +78,7 @@
         };
 
         element.resizing = function(e){
-          console.log(e);
-          var mouse={},width,height,left,top,offset=$container.offset();
+          var mouse={},width,height,left,top,offset = $container.offset();
           mouse.x = (e.clientX || e.pageX || e.originalEvent.touches[0].clientX) + $(window).scrollLeft();
           mouse.y = (e.clientY || e.pageY || e.originalEvent.touches[0].clientY) + $(window).scrollTop();
 
@@ -127,7 +128,7 @@
           resize_canvas.width = width;
           resize_canvas.height = height;
           resize_canvas.getContext('2d').drawImage(orig_src, 0, 0, width, height);
-
+          element.resize(image_target);
           $(image_target).attr('src', resize_canvas.toDataURL("image/png"));
         };
 
@@ -191,11 +192,11 @@
             top =  $(this).siblings(".component").find('.overlay').offset().top - $container.offset().top,
             width = $(this).siblings(".component").find('.overlay').width(),
             height = $(this).siblings(".component").find('.overlay').height();
-
+          // image_target.src =  original_target;
           crop_canvas = document.createElement('canvas');
-          crop_canvas.width = width;
-          crop_canvas.height = height;
-          crop_canvas.getContext('2d').drawImage(image_target, left, top, width, height, 0, 0, width, height);
+          crop_canvas.width = width * 4;
+          crop_canvas.height = height * 4;
+          crop_canvas.getContext('2d').drawImage(image_target, left, top, width, height, 0, 0, crop_canvas.width, crop_canvas.height);
           window.open(crop_canvas.toDataURL("image/png"));
         }
 

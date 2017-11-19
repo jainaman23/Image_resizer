@@ -54,16 +54,37 @@
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	margin-left: -100px;
 	margin-top: -100px;
 	z-index: 999;
 	width: 200px;
 	height: 200px;
-    border: solid 2px rgba(222,60,80,.9);
+  border: solid 2px rgba(222,60,80,.9);
 	box-sizing: content-box;
 	pointer-events: none;
+  transform: translateX(-50%);
 }
 
+.resizer-first-container .overlay {
+  width: 375.75px;
+  height: 102px;
+}
+
+.resizer-second-container .overlay {
+  width: 200px;
+  height: 129px;
+}
+
+.resizer-third-container .overlay {
+  width: 300px;
+  height: 157.5px;
+}
+
+.resizer-fourth-container .overlay {
+  width: 280px;
+  height: 150px;
+}
+
+/*
 .overlay:after,
 .overlay:before {
 	content: '';
@@ -73,9 +94,9 @@
 	height: 40px;
     border-left: dashed 2px rgba(222,60,80,.9);
 	border-right: dashed 2px rgba(222,60,80,.9);
-}
+}*/
 
-.overlay:before {
+/*.overlay:before {
 	top: 0;
 	margin-left: -2px;
 	margin-top: -40px;
@@ -85,9 +106,9 @@
 	bottom: 0;
 	margin-left: -2px;
 	margin-bottom: -40px;
-}
+}*/
 
-.overlay-inner:after,
+/*.overlay-inner:after,
 .overlay-inner:before {
 	content: '';
 	position: absolute;
@@ -108,7 +129,7 @@
 	right: 0;
 	margin-right: -40px;
 	margin-top: -2px;
-}
+}*/
 
 .btn-crop {
 	position: absolute;
@@ -126,4 +147,12 @@
 .btn-crop img {
 	vertical-align: middle;
 	margin-left: 8px;
+}
+
+.image-resizer-wrapper {
+  margin-bottom: 60px;
+}
+
+.image-resizer-wrapper p {
+  margin-bottom: 2px;
 }
